@@ -2,7 +2,8 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
-import stringSimilarity from 'string-similarity';
+// import stringSimilarity from 'string-similarity';
+import { FeatureCollection } from 'geojson';
 
 interface HappinessData {
   Country: string;
@@ -34,11 +35,11 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
       // Type assertion for worldData
       const worldTopo = worldData as any;
 
-      const countries = topojson.feature(
+      const countries = (topojson.feature(
         worldTopo,
         worldTopo.objects.countries
-      ).features as GeoJSON.FeatureCollection<GeoJSON.GeometryObject>['features'];
-
+      ) as unknown as FeatureCollection).features;
+      
       // Create a color scale based on Ladder score
       const colorScale = d3
         .scaleSequential(d3.interpolateYlGnBu)
@@ -69,19 +70,19 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
           }
 
           // If no exact match, use fuzzy matching
-          const bestMatch = stringSimilarity.findBestMatch(
-            topoCountryName,
-            validCountryNames
-          );
-          const matchedCountry =
-            bestMatch.bestMatch.rating > 0.8 ? bestMatch.bestMatch.target : null;
+          // const bestMatch = stringSimilarity.findBestMatch(
+          //   topoCountryName,
+          //   validCountryNames
+          // );
+          // const matchedCountry =
+          //   bestMatch.bestMatch.rating > 0.8 ? bestMatch.bestMatch.target : null;
 
-          if (matchedCountry) {
-            const fuzzyMatchedData = data.find((c) => c.Country === matchedCountry);
-            return fuzzyMatchedData
-              ? colorScale(fuzzyMatchedData['Ladder score'])
-              : '#ccc';
-          }
+          // if (matchedCountry) {
+          //   const fuzzyMatchedData = data.find((c) => c.Country === matchedCountry);
+          //   return fuzzyMatchedData
+          //     ? colorScale(fuzzyMatchedData['Ladder score'])
+          //     : '#ccc';
+          // }
 
           return '#ccc'; // Default color for unmatched countries
         })
@@ -112,18 +113,18 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
           let countryData = data.find((c) => c.Country === topoCountryName);
 
           // If no exact match, use fuzzy matching
-          if (!countryData) {
-            const bestMatch = stringSimilarity.findBestMatch(
-              topoCountryName,
-              validCountryNames
-            );
-            const matchedCountry =
-              bestMatch.bestMatch.rating > 0.8 ? bestMatch.bestMatch.target : null;
+          // if (!countryData) {
+          //   const bestMatch = stringSimilarity.findBestMatch(
+          //     topoCountryName,
+          //     validCountryNames
+          //   );
+          //   const matchedCountry =
+          //     bestMatch.bestMatch.rating > 0.8 ? bestMatch.bestMatch.target : null;
 
-            if (matchedCountry) {
-              countryData = data.find((c) => c.Country === matchedCountry);
-            }
-          }
+          //   if (matchedCountry) {
+          //     countryData = data.find((c) => c.Country === matchedCountry);
+          //   }
+          // }
 
           tooltip.transition().duration(200).style('opacity', 0.9);
           tooltip

@@ -18,6 +18,7 @@ const App: React.FC = () => {
       const typedData = csvData as HappinessData[];
       setData(typedData);
     });
+    console.log(data);
   }, []);
 
   return (
