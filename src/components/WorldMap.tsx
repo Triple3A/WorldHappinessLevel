@@ -4,12 +4,7 @@ import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 // import stringSimilarity from 'string-similarity';
 import { FeatureCollection } from 'geojson';
-
-interface HappinessData {
-  Country: string;
-  'Ladder score': number;
-  [key: string]: any;
-}
+import { HappinessData } from '../types';
 
 interface WorldMapProps {
   data: HappinessData[];
@@ -43,10 +38,10 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
       // Create a color scale based on Ladder score
       const colorScale = d3
         .scaleSequential(d3.interpolateYlGnBu)
-        .domain(d3.extent(data, (d) => d['Ladder score']) as [number, number]);
+        .domain(d3.extent(data, (d) => d.ladderScore) as [number, number]);
 
       // Prepare valid country names from the CSV
-      const validCountryNames = data.map((d) => d.Country);
+      const validCountryNames = data.map((d) => d.country);
 
       // Draw countries on the map
       svg
@@ -63,10 +58,10 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
           }
 
           // Attempt exact match
-          const countryData = data.find((c) => c.Country === topoCountryName);
+          const countryData = data.find((c) => c.country === topoCountryName);
 
           if (countryData) {
-            return colorScale(countryData['Ladder score']);
+            return colorScale(countryData.ladderScore);
           }
 
           // If no exact match, use fuzzy matching
@@ -110,7 +105,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
           }
 
           // Attempt exact match
-          let countryData = data.find((c) => c.Country === topoCountryName);
+          let countryData = data.find((c) => c.country === topoCountryName);
 
           // If no exact match, use fuzzy matching
           // if (!countryData) {
@@ -130,7 +125,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
           tooltip
             .html(
               countryData
-                ? `<strong>${countryData.Country}</strong><br>Ladder score: ${countryData['Ladder score']}`
+                ? `<strong>${countryData.country}</strong><br>Ladder score: ${countryData.ladderScore}`
                 : `<strong>${topoCountryName}</strong><br>No data`
             )
             .style('left', `${event.pageX + 10}px`)
