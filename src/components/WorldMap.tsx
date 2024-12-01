@@ -24,7 +24,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
     const path = d3.geoPath().projection(projection);
 
     // Load world map TopoJSON
-    d3.json('/countries-110m.json').then((worldData) => {
+    d3.json('/countries-50m.json').then((worldData) => {
       const worldTopo = worldData as any;
 
       const countries = (topojson.feature(
