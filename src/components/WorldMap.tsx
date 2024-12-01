@@ -50,7 +50,11 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
           const countryData = data.find((c) => c.country === topoCountryName);
           return countryData ? colorScale(countryData.ladderScore) : '#ccc';
         })
-        .attr('stroke', '#fff');
+        .attr('stroke', (d) => {
+          const topoCountryName = (d.properties && d.properties.name) as string;
+          const countryData = data.find((c) => c.country === topoCountryName);
+          return countryData ? '#000' : '#fff';
+        });
 
       // Add a tooltip
       const tooltip = d3
