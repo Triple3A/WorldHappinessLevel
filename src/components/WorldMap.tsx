@@ -1,8 +1,6 @@
-// src/components/WorldMap.tsx
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
-// import stringSimilarity from 'string-similarity';
 import { FeatureCollection } from 'geojson';
 import { HappinessData } from '../types';
 
@@ -27,21 +25,17 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
 
     // Load world map TopoJSON
     d3.json('/countries-110m.json').then((worldData) => {
-      // Type assertion for worldData
       const worldTopo = worldData as any;
 
       const countries = (topojson.feature(
         worldTopo,
         worldTopo.objects.countries
       ) as unknown as FeatureCollection).features;
-      
+
       // Create a color scale based on Ladder score
       const colorScale = d3
         .scaleSequential(d3.interpolateYlGnBu)
         .domain(d3.extent(data, (d) => d.ladderScore) as [number, number]);
-
-      // Prepare valid country names from the CSV
-      const validCountryNames = data.map((d) => d.country);
 
       // Draw countries on the map
       svg
@@ -52,34 +46,8 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
         .attr('d', path as any)
         .attr('fill', (d) => {
           const topoCountryName = (d.properties && d.properties.name) as string;
-
-          if (!topoCountryName || typeof topoCountryName !== 'string') {
-            return '#ccc'; // Default color for invalid/missing country names
-          }
-
-          // Attempt exact match
           const countryData = data.find((c) => c.country === topoCountryName);
-
-          if (countryData) {
-            return colorScale(countryData.ladderScore);
-          }
-
-          // If no exact match, use fuzzy matching
-          // const bestMatch = stringSimilarity.findBestMatch(
-          //   topoCountryName,
-          //   validCountryNames
-          // );
-          // const matchedCountry =
-          //   bestMatch.bestMatch.rating > 0.8 ? bestMatch.bestMatch.target : null;
-
-          // if (matchedCountry) {
-          //   const fuzzyMatchedData = data.find((c) => c.Country === matchedCountry);
-          //   return fuzzyMatchedData
-          //     ? colorScale(fuzzyMatchedData['Ladder score'])
-          //     : '#ccc';
-          // }
-
-          return '#ccc'; // Default color for unmatched countries
+          return countryData ? colorScale(countryData.ladderScore) : '#ccc';
         })
         .attr('stroke', '#fff');
 
@@ -88,51 +56,35 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
         .select('body')
         .append('div')
         .attr('class', 'tooltip')
-        .style('opacity', 0);
+        .style('opacity', 0)
+        .style('position', 'absolute') // Allow tooltip to move freely
+        .style('background', 'white')
+        .style('padding', '8px')
+        .style('border', '1px solid #ccc')
+        .style('border-radius', '4px')
+        .style('pointer-events', 'none'); // Prevent tooltip from interfering with mouse events
 
       svg
         .selectAll<SVGPathElement, any>('.country')
         .on('mouseover', (event, d) => {
           const topoCountryName = (d.properties && d.properties.name) as string;
+          const countryData = data.find((c) => c.country === topoCountryName);
 
-          if (!topoCountryName || typeof topoCountryName !== 'string') {
-            tooltip.transition().duration(200).style('opacity', 0.9);
-            tooltip
-              .html(`<strong>Unknown Country</strong><br>No data`)
-              .style('left', `${event.pageX + 10}px`)
-              .style('top', `${event.pageY - 28}px`);
-            return;
-          }
-
-          // Attempt exact match
-          let countryData = data.find((c) => c.country === topoCountryName);
-
-          // If no exact match, use fuzzy matching
-          // if (!countryData) {
-          //   const bestMatch = stringSimilarity.findBestMatch(
-          //     topoCountryName,
-          //     validCountryNames
-          //   );
-          //   const matchedCountry =
-          //     bestMatch.bestMatch.rating > 0.8 ? bestMatch.bestMatch.target : null;
-
-          //   if (matchedCountry) {
-          //     countryData = data.find((c) => c.Country === matchedCountry);
-          //   }
-          // }
-
-          tooltip.transition().duration(200).style('opacity', 0.9);
           tooltip
             .html(
               countryData
                 ? `<strong>${countryData.country}</strong><br>Ladder score: ${countryData.ladderScore}`
                 : `<strong>${topoCountryName}</strong><br>No data`
             )
-            .style('left', `${event.pageX + 10}px`)
-            .style('top', `${event.pageY - 28}px`);
+            .style('opacity', 1);
+        })
+        .on('mousemove', (event) => {
+          tooltip
+            .style('left', `${event.clientX + 10}px`) // Position tooltip near the cursor
+            .style('top', `${event.clientY + 10}px`); // Add offset for better usability
         })
         .on('mouseout', () => {
-          tooltip.transition().duration(500).style('opacity', 0);
+          tooltip.style('opacity', 0); // Hide tooltip on mouse out
         });
     });
   }, [data]);
