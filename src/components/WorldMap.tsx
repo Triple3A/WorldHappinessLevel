@@ -57,12 +57,12 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
         .append('div')
         .attr('class', 'tooltip')
         .style('opacity', 0)
-        .style('position', 'absolute') // Allow tooltip to move freely
+        .style('position', 'absolute')
         .style('background', 'white')
         .style('padding', '8px')
         .style('border', '1px solid #ccc')
         .style('border-radius', '4px')
-        .style('pointer-events', 'none'); // Prevent tooltip from interfering with mouse events
+        .style('pointer-events', 'none');
 
       svg
         .selectAll<SVGPathElement, any>('.country')
@@ -80,18 +80,79 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
         })
         .on('mousemove', (event) => {
           tooltip
-            .style('left', `${event.clientX + 10}px`) // Position tooltip near the cursor
-            .style('top', `${event.clientY + 10}px`); // Add offset for better usability
+            .style('left', `${event.clientX + 10}px`)
+            .style('top', `${event.clientY + 10}px`);
         })
         .on('mouseout', () => {
-          tooltip.style('opacity', 0); // Hide tooltip on mouse out
+          tooltip.style('opacity', 0);
         });
+
+      // Add a legend below the map
+      const legendWidth = 200;
+      const legendHeight = 10;
+      const legendX = ((width - legendWidth) / 2) - 200; // Center the legend
+      const legendY = height + 30; // Below the map, with margin
+
+      const legendScale = d3
+        .scaleLinear()
+        .domain(colorScale.domain() as [number, number])
+        .range([0, legendWidth]);
+
+      const legendAxis = d3
+        .axisBottom(legendScale)
+        .ticks(6)
+        .tickSize(-legendHeight);
+
+      const legend = svg
+        .append('g')
+        .attr('transform', `translate(${legendX}, ${legendY})`);
+// Add a title to the legend
+    svg
+      .append('text')
+      .attr('x', legendX + legendWidth / 2) // Center the title over the legend
+      .attr('y', legendY - 10) // Position the title slightly above the legend
+      .attr('text-anchor', 'middle') // Center-align the text
+      .style('font-size', '12px')
+      .style('font-weight', 'bold')
+      .text('Ladder Score');
+
+      // Create the gradient for the legend
+      const gradient = svg
+        .append('defs')
+        .append('linearGradient')
+        .attr('id', 'legend-gradient')
+        .attr('x1', '0%')
+        .attr('x2', '100%')
+        .attr('y1', '0%')
+        .attr('y2', '0%');
+
+      const colorRange = d3.range(0, 1.01, 0.01).map((t) =>
+        colorScale(
+          t * (colorScale.domain()[1] - colorScale.domain()[0]) +
+            colorScale.domain()[0]
+        )
+      );
+
+      colorRange.forEach((color, i) => {
+        gradient
+          .append('stop')
+          .attr('offset', `${(i / (colorRange.length - 1)) * 100}%`)
+          .attr('stop-color', color as string);
+      });
+
+      legend
+        .append('rect')
+        .attr('width', legendWidth)
+        .attr('height', legendHeight)
+        .style('fill', 'url(#legend-gradient)');
+
+      legend.append('g').attr('transform', `translate(0, ${legendHeight})`).call(legendAxis);
     });
   }, [data]);
 
   return (
     <div>
-      <svg ref={svgRef} width={800} height={500}></svg>
+      <svg ref={svgRef} width={800} height={550}></svg>
     </div>
   );
 };
