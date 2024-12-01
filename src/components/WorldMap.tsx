@@ -34,8 +34,9 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
 
       // Create a color scale based on Ladder score
       const colorScale = d3
-        .scaleSequential(d3.interpolateYlGnBu)
-        .domain(d3.extent(data, (d) => d.ladderScore) as [number, number]);
+      .scaleSequential((t) => d3.interpolateYlGnBu(1 - t)) // Reverse the gradient
+      .domain([1.721, 7.741]); // High numbers are yellow, low numbers are blue
+
 
       // Draw countries on the map
       svg
