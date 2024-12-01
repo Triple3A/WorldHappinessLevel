@@ -10,20 +10,20 @@ const WorldMap = ({ data }) => {
     const width = 800;
     const height = 500;
 
-    // Projection and path setup
-    const projection = d3.geoMercator().scale(100).translate([width / 2, height / 1.5]);
+    // Set up projection and path
+    const projection = d3.geoMercator().scale(120).translate([width / 2, height / 1.5]);
     const path = d3.geoPath(projection);
 
-    // Load topojson and map data
+    // Load world map TopoJSON
     d3.json("/countries-110m.json").then((worldData) => {
       const countries = topojson.feature(worldData, worldData.objects.countries).features;
 
-      // Scale for happiness levels
+      // Create a color scale based on Ladder score
       const colorScale = d3
         .scaleSequential(d3.interpolateYlGnBu)
-        .domain(d3.extent(data, (d) => d.HappinessLevel));
+        .domain(d3.extent(data, (d) => d["Ladder score"]));
 
-      // Draw the map
+      // Draw countries on the map
       svg.selectAll(".country")
         .data(countries)
         .join("path")
@@ -31,30 +31,37 @@ const WorldMap = ({ data }) => {
         .attr("d", path)
         .attr("fill", (d) => {
           const countryData = data.find((c) => c.Country === d.properties.name);
-          return countryData ? colorScale(countryData.HappinessLevel) : "#ccc";
+          return countryData ? colorScale(countryData["Ladder score"]) : "#ccc"; // Default color if no data
         })
-        .attr("stroke", "#333");
+        .attr("stroke", "#fff");
 
-      // Add legend
-    //   const legend = svg.append("g").attr("transform", `translate(20, 20)`);
-    //   const legendScale = d3.scaleLinear()
-    //     .domain(d3.extent(data, (d) => d.HappinessLevel))
-    //     .range([0, 300]);
-    //   const legendAxis = d3.axisBottom(legendScale).ticks(6);
+      // Add a tooltip
+      const tooltip = d3.select("body").append("div").attr("class", "tooltip").style("opacity", 0);
 
-    //   legend.selectAll("rect")
-    //     .data(d3.range(0, 1.01, 0.01))
-    //     .join("rect")
-    //     .attr("x", (d) => legendScale(d3.interpolate(d3.extent(data, d => d.HappinessLevel)[0], d)))
-    //     .attr("width", 10)
-    //     .attr("height", 20)
-    //     .attr("fill", d => colorScale(d))
-
-    //   legend.append("g").call(legendAxis);
+      svg.selectAll(".country")
+        .on("mouseover", (event, d) => {
+          const countryData = data.find((c) => c.Country === d.properties.name);
+          tooltip.transition().duration(200).style("opacity", 0.9);
+          tooltip
+            .html(
+              countryData
+                ? `<strong>${countryData.Country}</strong><br>Ladder score: ${countryData["Ladder score"]}`
+                : `<strong>${d.properties.name}</strong><br>No data`
+            )
+            .style("left", `${event.pageX + 10}px`)
+            .style("top", `${event.pageY - 28}px`);
+        })
+        .on("mouseout", () => {
+          tooltip.transition().duration(500).style("opacity", 0);
+        });
     });
   }, [data]);
 
-  return <svg ref={svgRef} width={800} height={500}></svg>;
+  return (
+    <div>
+      <svg ref={svgRef} width={800} height={500}></svg>
+    </div>
+  );
 };
 
 export default WorldMap;

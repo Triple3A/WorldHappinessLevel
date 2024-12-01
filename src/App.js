@@ -6,8 +6,8 @@ const App = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    // Load happiness data
-    d3.csv("/happiness.csv", d3.autoType).then((csvData) => {
+    // Load CSV file
+    d3.csv("/public/happiness.csv", d3.autoType).then((csvData) => {
       setData(csvData);
     });
   }, []);
