@@ -1,24 +1,12 @@
-// src/App.tsx
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import WorldMap from './components/WorldMap';
 import { HappinessData } from './types';
 
-
 const App: React.FC = () => {
   const [data, setData] = useState<HappinessData[]>([]);
 
-  // useEffect(() => {
-  //   // Load CSV file
-  //   d3.csv('/happiness.csv', d3.autoType).then((csvData) => {
-  //     const typedData = csvData as HappinessData[];
-  //     setData(typedData);
-  //   });
-  //   console.log(data);
-  // }, []);
-
   useEffect(() => {
-    // Load CSV file
     const loadData = async () => {
       try {
         const csvData = await d3.csv('../data/happinessLevel.csv', d => ({
@@ -45,8 +33,8 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div>
-      <h1>World Happiness Map</h1>
+    <div id="main-container">
+      <h1>World Happiness Map</h1> {/* Title in black */}
       {data.length > 0 ? <WorldMap data={data} /> : <p>Loading data...</p>}
     </div>
   );

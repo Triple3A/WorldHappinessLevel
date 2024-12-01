@@ -95,8 +95,8 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
       // Add a legend below the map
       const legendWidth = 200;
       const legendHeight = 10;
-      const legendX = ((width - legendWidth) / 2) - 200; // Center the legend
-      const legendY = height + 30; // Below the map, with margin
+      const legendX = ((width - legendWidth) / 2) - 250; // Center the legend
+      const legendY = height + 10; // Below the map, with margin
 
       const legendScale = d3
         .scaleLinear()
@@ -105,7 +105,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
 
       const legendAxis = d3
         .axisBottom(legendScale)
-        .ticks(6)
+        .tickValues([1.721, 7.741])
         .tickSize(-legendHeight);
 
       const legend = svg
