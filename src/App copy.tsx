@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import WorldMap from './components/WorldMap';
 import { HappinessDataBase } from './types';
 import TimeSlider from './components/TimeSlider';
+import BarChart from './components/BarChart';
 
 interface HappinessData extends HappinessDataBase {
   upperwhisker: number;
@@ -80,10 +81,41 @@ const App: React.FC = () => {
 
   return (
     <div id="main-container">
-      <h1>World Happiness Map</h1> {/* Title in black */}
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <h1>World Happiness Map</h1>
       <h2>Selected Year: {year}</h2>
       <TimeSlider onYearChange={handleYearChange} newYear={year} />
+      <br/>
       {data.length > 0 ? <WorldMap data={data} dataWithYear={dataWithYear} currentYear={year} /> : <p>Loading data...</p>}
+      <BarChart/>
     </div>
   );
 };
