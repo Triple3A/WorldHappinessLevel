@@ -20,7 +20,7 @@ interface HappinessWithYear extends HappinessDataBase {
 const App: React.FC = () => {
   const [data, setData] = useState<HappinessData[]>([]);
   const [dataWithYear, setDataWithYear] = useState<HappinessWithYear[]>([]);
-  const [year, setYear] = useState(2006); // Default year
+  const [year, setYear] = useState(2023); // Default year
 
   const handleYearChange = (newYear: number) => {
     setYear(newYear); // Update the state with the selected year
@@ -56,7 +56,7 @@ const App: React.FC = () => {
     const loadDataWithYear = async () => {
       try {
         const csvData = await d3.csv('../data/DataForTable.csv', d => ({
-          country: d['Country name'],
+          country: d['Country'],
           year: +d['year'],
           ladderScore: +d['Life Ladder'],
           gdp: +d['Log GDP per capita'],
@@ -82,8 +82,8 @@ const App: React.FC = () => {
     <div id="main-container">
       <h1>World Happiness Map</h1> {/* Title in black */}
       <h2>Selected Year: {year}</h2>
-      <TimeSlider onYearChange={handleYearChange} />
-      {data.length > 0 ? <WorldMap data={data} dataWithYear={dataWithYear} /> : <p>Loading data...</p>}
+      <TimeSlider onYearChange={handleYearChange} newYear={year} />
+      {data.length > 0 ? <WorldMap data={data} dataWithYear={dataWithYear} currentYear={year} /> : <p>Loading data...</p>}
     </div>
   );
 };

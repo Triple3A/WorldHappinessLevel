@@ -3,11 +3,11 @@ import * as d3 from "d3";
 
 interface TimeSliderProps {
   onYearChange: (year: number) => void; // Callback for year change
+  newYear: number;
 }
 
-const TimeSlider: React.FC<TimeSliderProps> = ({ onYearChange }) => {
+const TimeSlider: React.FC<TimeSliderProps> = ({ onYearChange, newYear }) => {
   const sliderRef = useRef<SVGSVGElement>(null);
-  var newYear = 2023;
 
   useEffect(() => {
     const width = 600;
@@ -32,9 +32,9 @@ const TimeSlider: React.FC<TimeSliderProps> = ({ onYearChange }) => {
 
     g.append("g").call(axis);
 
-    // Initial circle position (scale at 2006)
+    // Initial circle position (scale at 2023)
     const handle = g.append("circle")
-      .attr("cx", scale(newYear)) // Initial position at 2006
+      .attr("cx", scale(newYear)) // Initial position at 2023
       .attr("cy", 0)
       .attr("r", 10)
       .attr("fill", "steelblue")
@@ -61,6 +61,7 @@ const TimeSlider: React.FC<TimeSliderProps> = ({ onYearChange }) => {
       })
       .on("end", () => {
         handle.attr("fill", "steelblue"); // Reset visual feedback
+        handle.attr('cx', scale(newYear));
       });
 
     handle.call(drag); // Attach drag behavior to the circle
@@ -69,7 +70,7 @@ const TimeSlider: React.FC<TimeSliderProps> = ({ onYearChange }) => {
     return () => {
       svg.selectAll("*").remove();
     };
-  }, [onYearChange]);
+  }, [onYearChange, newYear]);
 
   return <svg ref={sliderRef} style={{ display: "block", margin: "auto" }}></svg>;
 };

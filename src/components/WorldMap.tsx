@@ -20,10 +20,12 @@ interface HappinessWithYear extends HappinessDataBase {
 interface WorldMapProps {
   data: HappinessData[];
   dataWithYear: HappinessWithYear[];
+  currentYear: number;
 }
 
-const WorldMap: React.FC<WorldMapProps> = ({ data }, { dataWithYear }) => {
+const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear}) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
+
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -61,12 +63,12 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }, { dataWithYear }) => {
         .attr('d', path as any)
         .attr('fill', (d) => {
           const topoCountryName = (d.properties && d.properties.name) as string;
-          const countryData = data.find((c) => c.country === topoCountryName);
+          const countryData = currentYear === 2023 ? data.find((c) => c.country === topoCountryName) : dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
           return countryData ? colorScale(countryData.ladderScore) : '#ccc';
         })
         .attr('stroke', (d) => {
           const topoCountryName = (d.properties && d.properties.name) as string;
-          const countryData = data.find((c) => c.country === topoCountryName);
+          const countryData = currentYear === 2023 ? data.find((c) => c.country === topoCountryName) : dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
           return countryData ? '#000' : '#fff';
         });
 
@@ -87,7 +89,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }, { dataWithYear }) => {
         .selectAll<SVGPathElement, any>('.country')
         .on('mouseover', (event, d) => {
           const topoCountryName = (d.properties && d.properties.name) as string;
-          const countryData = data.find((c) => c.country === topoCountryName);
+          const countryData = currentYear === 2023 ? data.find((c) => c.country === topoCountryName) : dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
 
           tooltip
             .html(
@@ -167,7 +169,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ data }, { dataWithYear }) => {
 
       legend.append('g').attr('transform', `translate(0, ${legendHeight})`).call(legendAxis);
     });
-  }, [data]);
+  }, [data, currentYear]);
 
   return (
     <div>
