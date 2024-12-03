@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import WorldMap from './components/WorldMap';
 import { HappinessDataBase } from './types';
+import TimeSlider from './components/TimeSlider';
 
 interface HappinessData extends HappinessDataBase {
   upperwhisker: number;
@@ -19,6 +20,11 @@ interface HappinessWithYear extends HappinessDataBase {
 const App: React.FC = () => {
   const [data, setData] = useState<HappinessData[]>([]);
   const [dataWithYear, setDataWithYear] = useState<HappinessWithYear[]>([]);
+  const [year, setYear] = useState(2006); // Default year
+
+  const handleYearChange = (newYear: number) => {
+    setYear(newYear); // Update the state with the selected year
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -75,6 +81,8 @@ const App: React.FC = () => {
   return (
     <div id="main-container">
       <h1>World Happiness Map</h1> {/* Title in black */}
+      <h2>Selected Year: {year}</h2>
+      <TimeSlider onYearChange={handleYearChange} />
       {data.length > 0 ? <WorldMap data={data} dataWithYear={dataWithYear} /> : <p>Loading data...</p>}
     </div>
   );
