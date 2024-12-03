@@ -1,10 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import WorldMap from './components/WorldMap';
-import { HappinessData } from './types';
+import { HappinessDataBase } from './types';
+
+interface HappinessData extends HappinessDataBase {
+  upperwhisker: number;
+  lowerwhisker: number;
+  dystopia: number;
+}
+
+interface HappinessWithYear extends HappinessDataBase {
+  year: number;
+  positiveEffect: number;
+  negativeEffect: number;
+}
+
 
 const App: React.FC = () => {
   const [data, setData] = useState<HappinessData[]>([]);
+  const [dataWithYear, setDataWithYear] = useState<HappinessWithYear[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -32,10 +46,36 @@ const App: React.FC = () => {
     loadData();
   }, []);
 
+  useEffect(() => {
+    const loadDataWithYear = async () => {
+      try {
+        const csvData = await d3.csv('../data/DataForTable.csv', d => ({
+          country: d['Country name'],
+          year: +d['year'],
+          ladderScore: +d['Life Ladder'],
+          gdp: +d['Log GDP per capita'],
+          socialSupport: +d['Social support'],
+          lifeExpectency: +d['Healthy life expectancy at birth'],
+          freedom: +d['Freedom to make life choices'],
+          generosity: +d['Generosity'],
+          corruption:	+d['Perceptions of corruption'],
+          positiveEffect:	+d['Positive affect'],
+          negativeEffect: +d['Negative affect']
+        }));
+        
+        setDataWithYear(csvData);
+      } catch (error) {
+        console.error('Error loading CSV file:', error);
+      }
+    };
+
+    loadDataWithYear();
+  }, []);
+
   return (
     <div id="main-container">
       <h1>World Happiness Map</h1> {/* Title in black */}
-      {data.length > 0 ? <WorldMap data={data} /> : <p>Loading data...</p>}
+      {data.length > 0 ? <WorldMap data={data} dataWithYear={dataWithYear} /> : <p>Loading data...</p>}
     </div>
   );
 };

@@ -2,13 +2,27 @@ import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 import * as topojson from 'topojson-client';
 import { FeatureCollection } from 'geojson';
-import { HappinessData } from '../types';
+import { HappinessDataBase } from '../types';
+
+
+interface HappinessData extends HappinessDataBase {
+  upperwhisker: number;
+  lowerwhisker: number;
+  dystopia: number;
+}
+
+interface HappinessWithYear extends HappinessDataBase {
+  year: number;
+  positiveEffect: number;
+  negativeEffect: number;
+}
 
 interface WorldMapProps {
   data: HappinessData[];
+  dataWithYear: HappinessWithYear[];
 }
 
-const WorldMap: React.FC<WorldMapProps> = ({ data }) => {
+const WorldMap: React.FC<WorldMapProps> = ({ data }, { dataWithYear }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   useEffect(() => {

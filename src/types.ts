@@ -30,16 +30,13 @@ export interface PlotProps {
     data: VehicleData[];
 }
 
-export interface HappinessData {
+export interface HappinessDataBase {
     country: string;
     ladderScore: number;
-    upperwhisker: number;
-    lowerwhisker: number;
     gdp: number;
     socialSupport: number;
     lifeExpectency: number;
     freedom: number;
     generosity: number;
     corruption:	number;
-    dystopia: number;
 }  
