@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import * as d3 from "d3";
 
-const features = ["GDP", "support", "health", "freedom", "generosity", "corruption"] as const;
+const features = ["GDP", "support", "health", "freedom", "generosity", "corruption", "dystopia"] as const;
 type Feature = typeof features[number];
 
 const data = [
-  { country: "Luxembourg", GDP: 1.2, support: 1.0, health: 0.9, freedom: 0.8, generosity: 0.7, corruption: 0.6 },
-  { country: "Ireland", GDP: 1.1, support: 0.9, health: 0.8, freedom: 0.7, generosity: 0.6, corruption: 0.5 },
-  { country: "Germany", GDP: 3.0, support: 0.8, health: 0.7, freedom: 0.6, generosity: 0.5, corruption: 0.4 },
-  { country: "United Kingdom", GDP: 0.9, support: 0.7, health: 0.6, freedom: 0.5, generosity: 0.4, corruption: 0.3 },
-  { country: "Belgium", GDP: 0.8, support: 0.6, health: 0.5, freedom: 0.4, generosity: 0.3, corruption: 0.2 },
-  { country: "Chile", GDP: 0.7, support: 0.5, health: 0.4, freedom: 0.3, generosity: 0.2, corruption: 0.1 },
+  { country: "Finland", GDP: 1.844, support: 1.572, health: 0.695, freedom: 0.859, generosity: 0.142, corruption: 0.546, dystopia: 2.082 },
+  { country: "Denmark", GDP: 1.908, support: 1.520, health: 0.699, freedom: 0.823, generosity: 0.204, corruption: 0.548, dystopia: 1.881},
+  { country: "Iceland", GDP: 1.881, support: 1.617, health: 0.718, freedom: 0.819, generosity: 0.258, corruption: 0.182, dystopia: 2.050},
+  { country: "Sweden", GDP: 1.878, support: 1.501, health: 0.724, freedom: 0.838, generosity: 0.221, corruption: 0.524, dystopia: 1.658 },
+  { country: "Israel", GDP: 1.803, support: 1.513, health: 0.740, freedom: 0.641, generosity: 0.153, corruption: 0.193, dystopia: 2.298 },
+  { country: "United States", GDP: 1.939, support: 1.392, health: 0.542, freedom: 0.586, generosity: 0.223, corruption: 0.169, dystopia: 1.873 },
 ];
 
 const BarChart: React.FC = () => {
@@ -37,7 +37,7 @@ const BarChart: React.FC = () => {
 
   const xScale = d3
     .scaleLinear()
-    .domain([0, 6]) // Fixed x-axis range to [0, 6]
+    .domain([0, 8]) // Fixed x-axis range to [0, 6]
     .range([0, width - margin.left - margin.right]);
 
   const yScale = d3
@@ -48,11 +48,12 @@ const BarChart: React.FC = () => {
 
   const colors = {
     GDP: "blue",
-    support: "orange",
+    support: "brown",
     health: "green",
-    freedom: "red",
-    generosity: "purple",
-    corruption: "brown",
+    freedom: "orange",
+    generosity: "l-green",
+    corruption: "red",
+    dystopia: "purple"
   };
 
   return (

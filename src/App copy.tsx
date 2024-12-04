@@ -115,6 +115,9 @@ const App: React.FC = () => {
       <TimeSlider onYearChange={handleYearChange} newYear={year} />
       <br/>
       {data.length > 0 ? <WorldMap data={data} dataWithYear={dataWithYear} currentYear={year} /> : <p>Loading data...</p>}
+      <br/>
+      <br/>
+      <br/>
       <BarChart/>
     </div>
   );
