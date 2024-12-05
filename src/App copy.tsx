@@ -152,7 +152,7 @@ const App: React.FC = () => {
       {dataWithYear.length > 0 ? <Animation dataWithYear={dataWithYear}/> : <p>Loading data...</p>}
       <br/>
       <br/>
-      <BarChart/>
+      <BarChart dataWithYear={dataWithYear} currentYear={year}/>
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import * as d3 from "d3";
+import { HappinessDataBase } from "../types";
 
 const features = ["GDP", "support", "health", "freedom", "generosity", "corruption", "dystopia"] as const;
 type Feature = typeof features[number];
@@ -13,7 +14,28 @@ const data = [
   { country: "United States", GDP: 1.939, support: 1.392, health: 0.542, freedom: 0.586, generosity: 0.223, corruption: 0.169, dystopia: 1.873 },
 ];
 
-const BarChart: React.FC = () => {
+interface HappinessWithYear extends HappinessDataBase {
+  year: number;
+  positiveEffect: number;
+  negativeEffect: number;
+}
+
+interface WorldMapProps {
+  dataWithYear: HappinessWithYear[];
+  currentYear: number;
+}
+
+const getTopCountries = (
+  dataWithTime: HappinessWithYear[],
+  currentYear: number
+): { country: string; ladderScore: number }[] => {
+  return dataWithTime
+    .filter((entry) => entry.year === currentYear) // Filter data for the current year
+    .sort((a, b) => b.ladderScore - a.ladderScore) // Sort in descending order of ladderScore
+    .slice(0, 5) // Take the top 5 entries
+};
+
+const BarChart: React.FC<WorldMapProps> = ({ dataWithYear, currentYear }) => {
   const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([...features]);
 
   const handleFeatureToggle = (feature: Feature) => {
@@ -21,6 +43,18 @@ const BarChart: React.FC = () => {
       prev.includes(feature) ? prev.filter((f) => f !== feature) : [...prev, feature]
     );
   };
+
+  // Example usage:
+  const topCountries = getTopCountries(dataWithYear, currentYear);
+  console.log(topCountries);
+  
+  const usaData = dataWithYear.find(
+    (c) => c.country === 'United States of America' && c.year === currentYear
+  );
+
+  console.log(usaData);
+
+  // const data = topCountries.concat(usaData);
 
   // Dynamically calculate scores based on selected features
   const sortedData = data
@@ -60,6 +94,7 @@ const BarChart: React.FC = () => {
     <div>
       {/* Feature Toggle */}
       <div>
+        <h2>Feature Analysis</h2>
         {features.map((feature) => (
           <label key={feature} style={{ marginRight: "10px" }}>
             <input

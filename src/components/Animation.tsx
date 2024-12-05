@@ -4,12 +4,6 @@ import * as topojson from 'topojson-client';
 import { FeatureCollection } from 'geojson';
 import { HappinessDataBase } from '../types';
 
-interface HappinessData extends HappinessDataBase {
-  upperwhisker: number;
-  lowerwhisker: number;
-  dystopia: number;
-}
-
 interface HappinessWithYear extends HappinessDataBase {
   year: number;
   positiveEffect: number;
