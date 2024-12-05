@@ -101,6 +101,7 @@ const App: React.FC = () => {
       <br/>
       <br/>
       <br/>
+      {/* <br/>
       <br/>
       <br/>
       <br/>
@@ -108,12 +109,11 @@ const App: React.FC = () => {
       <br/>
       <br/>
       <br/>
-      <br/>
-      <br/>
+      <br/> */}
       {dataWithYear.length > 0 ? (
         <>
           <Animation dataWithYear={dataWithYear} />
-          <h2 style={{ marginTop: '20px' }}>Selected Year: {year}</h2>
+          <h2 style={{ marginTop: '60px' }}>Selected Year: {year}</h2>
           <TimeSlider onYearChange={handleYearChange} newYear={year} />
           <WorldMap data={data} dataWithYear={filteredData} currentYear={year} />
         </>
