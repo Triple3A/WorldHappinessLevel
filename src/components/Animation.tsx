@@ -24,8 +24,6 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
     const width = 800;
     const height = 500;
 
-    d3.select(svgRef.current).selectAll('*').remove();
-    d3.select('body').selectAll('.tooltip').remove();
 
 
     const projection = d3
@@ -102,7 +100,7 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
       // Add a legend below the map
       const legendWidth = 200;
       const legendHeight = 10;
-      const legendX = ((width - legendWidth) / 2) - 300; // Center the legend
+      const legendX = ((width - legendWidth) / 2) - 280; // Center the legend
       const legendY = height + 10; // Below the map, with margin
 
       const legendScale = d3
@@ -166,20 +164,27 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
     if (isAnimating) {
       const interval = setInterval(() => {
         setCurrentYear((prevYear) =>
-          prevYear < 2023 ? prevYear + 1 : 2006
+          prevYear < 2023 ? prevYear + 1 : 2023
         );
-      }, 100);
+        if (currentYear === 2023) {
+          setIsAnimating(false);
+        }
+      }, 300);
       
       return () => clearInterval(interval);
     }
-  }, [isAnimating]);
+  }, [isAnimating, currentYear]);
 
-  const toggleAnimation = () => setIsAnimating((prev) => !prev);
+  const toggleAnimation = () => {
+    setCurrentYear(2006);
+    setIsAnimating((prev) => !prev);
+  }
 
   return (
     <div style={{ position: 'relative', width: '800px', margin: '0 auto' }}>
+        <h3>Current Year is: {currentYear}</h3>
         <button className="animation-toggle-btn" onClick={toggleAnimation}>
-            {isAnimating ? 'Stop Animation' : 'Start Animation'}
+            {isAnimating ? 'Restart Animation' : 'Start Animation'}
         </button>
         <svg ref={svgRef} width={800} height={550}></svg>
     </div>
