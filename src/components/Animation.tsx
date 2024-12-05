@@ -24,7 +24,6 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [currentYear, setCurrentYear] = useState(2023);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [_tooltip, setTooltip] = useState();
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -48,17 +47,9 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
         (c) => c.country === 'United States of America' && c.year === currentYear
       )?.ladderScore;
 
-      const filteredCountries = countries.filter((d) => {
-        const topoCountryName = (d.properties && d.properties.name) as string;
-        const countryData = dataWithYear.find(
-          (c) => c.country === topoCountryName && c.year === currentYear
-        );
-        return countryData && countryData.ladderScore >= (usaHappiness || 0);
-      });
-
       const colorScale = d3
-        .scaleSequential((t) => d3.interpolateYlGnBu(1 - t))
-        .domain([1.721, 7.741]);
+        .scaleSequential((t) => d3.interpolateYlGn(1 - 1 * t))
+        .domain([6, 8]);
 
       svg
         .selectAll<SVGPathElement, any>('.country')
@@ -71,49 +62,49 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
           const countryData = dataWithYear.find(
             (c) => c.country === topoCountryName && c.year === currentYear && c.ladderScore >= (usaHappiness || 0)
           );
-          return usaHappiness && countryData ? colorScale(countryData.ladderScore * 10) : '#ccc';
+          return usaHappiness && countryData ? colorScale(countryData.ladderScore) : '#ccc';
         })
         .attr('stroke', '#000');
 
-        const tooltip = d3
-        .select('body')
-        .append('div')
-        .attr('class', 'tooltip')
-        .style('opacity', 0)
-        .style('position', 'absolute')
-        .style('background', 'white')
-        .style('padding', '8px')
-        .style('border', '1px solid #ccc')
-        .style('border-radius', '4px')
-        .style('pointer-events', 'none');
+    //     const tooltip = d3
+    //     .select('body')
+    //     .append('div')
+    //     .attr('class', 'tooltip')
+    //     .style('opacity', 0)
+    //     .style('position', 'absolute')
+    //     .style('background', 'white')
+    //     .style('padding', '8px')
+    //     .style('border', '1px solid #ccc')
+    //     .style('border-radius', '4px')
+    //     .style('pointer-events', 'none');
 
-      svg
-        .selectAll<SVGPathElement, any>('.country')
-        .on('mouseover', (event, d) => {
-          const topoCountryName = (d.properties && d.properties.name) as string;
-          const countryData = currentYear === 2023 ? dataWithYear.find((c) => c.country === topoCountryName) : dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
+    //   svg
+    //     .selectAll<SVGPathElement, any>('.country')
+    //     .on('mouseover', (event, d) => {
+    //       const topoCountryName = (d.properties && d.properties.name) as string;
+    //       const countryData = dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
 
-          tooltip
-            .html(
-              countryData
-                ? `<strong>${countryData.country}</strong><br>Ladder score: ${countryData.ladderScore}`
-                : `<strong>${topoCountryName}</strong><br>No data`
-            )
-            .style('opacity', 1);
-        })
-        .on('mousemove', (event) => {
-          tooltip
-            .style('left', `${event.x + 10}px`)
-            .style('top', `${event.y + 10}px`);
-        })
-        .on('mouseout', () => {
-          tooltip.style('opacity', 0);
-        });
+    //       tooltip
+    //         .html(
+    //           countryData
+    //             ? `<strong>${countryData.country}</strong><br>Ladder score: ${countryData.ladderScore}`
+    //             : `<strong>${topoCountryName}</strong><br>No data`
+    //         )
+    //         .style('opacity', 1);
+    //     })
+    //     .on('mousemove', (event) => {
+    //       tooltip
+    //         .style('left', `${event.pageX + 10}px`)
+    //         .style('top', `${event.pageY + 10}px`);
+    //     })
+    //     .on('mouseout', () => {
+    //       tooltip.style('opacity', 0);
+    //     });
 
       // Add a legend below the map
       const legendWidth = 200;
       const legendHeight = 10;
-      const legendX = ((width - legendWidth) / 2) - 250; // Center the legend
+      const legendX = ((width - legendWidth) / 2) - 300; // Center the legend
       const legendY = height + 10; // Below the map, with margin
 
       const legendScale = d3
@@ -123,7 +114,7 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
 
       const legendAxis = d3
         .axisBottom(legendScale)
-        .tickValues([1.721, 7.741])
+        .tickValues([6, 8])
         .tickSize(-legendHeight);
 
       const legend = svg
@@ -149,7 +140,7 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
         .attr('y1', '0%')
         .attr('y2', '0%');
 
-      const colorRange = d3.range(0, 1.01, 0.01).map((t) =>
+      const colorRange = d3.range(0, 1.01, 0.1).map((t) =>
         colorScale(
           t * (colorScale.domain()[1] - colorScale.domain()[0]) +
             colorScale.domain()[0]
@@ -171,7 +162,7 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
 
       legend.append('g').attr('transform', `translate(0, ${legendHeight})`).call(legendAxis);
     });
-  }, [dataWithYear, currentYear, isAnimating]);
+  }, [dataWithYear, currentYear]);
 
   useEffect(() => {
     if (isAnimating) {
@@ -189,10 +180,10 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
 
   return (
     <div>
-      <svg ref={svgRef} width={800} height={550}></svg>
-      <button onClick={toggleAnimation}>
-        {isAnimating ? 'Stop Animation' : 'Start Animation'}
-      </button>
+        <button onClick={toggleAnimation}>
+            {isAnimating ? 'Stop Animation' : 'Start Animation'}
+        </button>
+        <svg ref={svgRef} width={800} height={550}></svg>
     </div>
   );
 };

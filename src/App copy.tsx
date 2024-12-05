@@ -111,16 +111,46 @@ const App: React.FC = () => {
       <br/>
       <br/>
       <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
       <h1>World Happiness Map</h1>
+      <h2>Selected Year: {year}</h2>
+      <TimeSlider onYearChange={handleYearChange} newYear={year} />
+      {data.length > 0 ? <WorldMap data={data} dataWithYear={dataWithYear} currentYear={year} /> : <p>Loading data...</p>}
+      <br/>
+      <br/>
       {dataWithYear.length > 0 ? <Animation dataWithYear={dataWithYear}/> : <p>Loading data...</p>}
-      {/* <h2>Selected Year: {year}</h2> */}
-      {/* <TimeSlider onYearChange={handleYearChange} newYear={year} /> */}
-      <br/>
-      {/* {data.length > 0 ? <WorldMap data={data} dataWithYear={dataWithYear} currentYear={year} /> : <p>Loading data...</p>} */}
       <br/>
       <br/>
-      <br/>
-      {/* <BarChart/> */}
+      <BarChart/>
     </div>
   );
 };
