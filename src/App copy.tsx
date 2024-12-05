@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import WorldMap from './components/WorldMap';
-import { HappinessDataBase } from './types';
-import TimeSlider from './components/TimeSlider';
-import BarChart from './components/BarChart';
+import WorldMapNoTime from './components/WorldMapNoTime';
 import Animation from './components/Animation';
+import BarChart from './components/BarChart';
+import TimeSlider from './components/TimeSlider';
+import { HappinessDataBase } from './types';
 
 interface HappinessData extends HappinessDataBase {
   upperwhisker: number;
@@ -18,11 +19,11 @@ interface HappinessWithYear extends HappinessDataBase {
   negativeEffect: number;
 }
 
-
 const App: React.FC = () => {
   const [data, setData] = useState<HappinessData[]>([]);
   const [dataWithYear, setDataWithYear] = useState<HappinessWithYear[]>([]);
   const [year, setYear] = useState(2023); // Default year
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const handleYearChange = (newYear: number) => {
     setYear(newYear); // Update the state with the selected year
@@ -41,13 +42,14 @@ const App: React.FC = () => {
           lifeExpectency: +d['Explained by: Healthy life expectancy'],
           freedom: +d['Explained by: Freedom to make life choices'],
           generosity: +d['Explained by: Generosity'],
-          corruption:	+d['Explained by: Perceptions of corruption'],
-          dystopia:	+d['Dystopia + residual']
+          corruption: +d['Explained by: Perceptions of corruption'],
+          dystopia: +d['Dystopia + residual'],
         }));
 
-        setData(csvData);
+        setData(csvData as HappinessData[]);
       } catch (error) {
-        console.error('Error loading CSV file:', error);
+        setLoadError('Failed to load happiness level data.');
+        console.error(error);
       }
     };
 
@@ -66,93 +68,60 @@ const App: React.FC = () => {
           lifeExpectency: +d['Healthy life expectancy at birth'],
           freedom: +d['Freedom to make life choices'],
           generosity: +d['Generosity'],
-          corruption:	+d['Perceptions of corruption'],
-          positiveEffect:	+d['Positive affect'],
-          negativeEffect: +d['Negative affect']
+          corruption: +d['Perceptions of corruption'],
+          positiveEffect: +d['Positive affect'],
+          negativeEffect: +d['Negative affect'],
         }));
-        
-        setDataWithYear(csvData);
+
+        setDataWithYear(csvData as HappinessWithYear[]);
       } catch (error) {
-        console.error('Error loading CSV file:', error);
+        setLoadError('Failed to load data for year-specific table.');
+        console.error(error);
       }
     };
 
     loadDataWithYear();
   }, []);
 
+  // Filter data by the selected year
+  const filteredData = dataWithYear.filter(d => d.year === year);
+
   return (
-    <div id="main-container">
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
+    <div id="main-container" style={{ padding: '20px' }}>
       <h1>World Happiness Map</h1>
-      <h2>Selected Year: {year}</h2>
-      <TimeSlider onYearChange={handleYearChange} newYear={year} />
-      {data.length > 0 ? <WorldMap data={data} dataWithYear={dataWithYear} currentYear={year} /> : <p>Loading data...</p>}
+      <h2>Let's first take a glance at how happy people have been in the past three years!</h2>
+      {loadError ? (
+        <p style={{ color: 'red' }}>{loadError}</p>
+      ) : data.length > 0 ? (
+        <WorldMapNoTime data={data} />
+      ) : (
+        <p>Loading happiness data...</p>
+      )}
       <br/>
       <br/>
       <br/>
       <br/>
-      {dataWithYear.length > 0 ? <Animation dataWithYear={dataWithYear}/> : <p>Loading data...</p>}
       <br/>
       <br/>
-      <BarChart/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      {dataWithYear.length > 0 ? (
+        <>
+          <Animation dataWithYear={dataWithYear} />
+          <h2 style={{ marginTop: '20px' }}>Selected Year: {year}</h2>
+          <TimeSlider onYearChange={handleYearChange} newYear={year} />
+          <WorldMap data={data} dataWithYear={filteredData} currentYear={year} />
+        </>
+      ) : (
+        <p>Loading year-specific data...</p>
+      )}
+
+      <BarChart />
     </div>
   );
 };
