@@ -32,6 +32,11 @@ const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear}) =
     const width = 800;
     const height = 500;
 
+    d3.select(svgRef.current).selectAll('*').remove();
+
+    d3.select('body').selectAll('.tooltip').remove();
+
+
     // Set up projection and path
     const projection = d3
       .geoMercator()
@@ -74,16 +79,16 @@ const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear}) =
 
       // Add a tooltip
       const tooltip = d3
-        .select('body')
-        .append('div')
-        .attr('class', 'tooltip')
-        .style('opacity', 0)
-        .style('position', 'absolute')
-        .style('background', 'white')
-        .style('padding', '8px')
-        .style('border', '1px solid #ccc')
-        .style('border-radius', '4px')
-        .style('pointer-events', 'none');
+      .select('body')
+      .append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0)
+      .style('position', 'absolute')
+      .style('background', 'white')
+      .style('padding', '8px')
+      .style('border', '1px solid #ccc')
+      .style('border-radius', '4px')
+      .style('pointer-events', 'none')
 
       svg
         .selectAll<SVGPathElement, any>('.country')
@@ -97,6 +102,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear}) =
                 ? `<strong>${countryData.country}</strong><br>Ladder score: ${countryData.ladderScore}`
                 : `<strong>${topoCountryName}</strong><br>No data`
             )
+            .style('display', 'block')
             .style('opacity', 1);
         })
         .on('mousemove', (event) => {
@@ -105,7 +111,8 @@ const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear}) =
             .style('top', `${event.pageY + 10}px`);
         })
         .on('mouseout', () => {
-          tooltip.style('opacity', 0);
+          tooltip.style('opacity', 0)
+          .style('display', 'none'); // Ensure it's fully removed from view
         });
 
       // Add a legend below the map
