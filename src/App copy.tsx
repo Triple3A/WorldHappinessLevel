@@ -147,6 +147,8 @@ const App: React.FC = () => {
       {data.length > 0 ? <WorldMap data={data} dataWithYear={dataWithYear} currentYear={year} /> : <p>Loading data...</p>}
       <br/>
       <br/>
+      <br/>
+      <br/>
       {dataWithYear.length > 0 ? <Animation dataWithYear={dataWithYear}/> : <p>Loading data...</p>}
       <br/>
       <br/>

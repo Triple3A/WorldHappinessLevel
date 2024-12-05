@@ -179,8 +179,8 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
   const toggleAnimation = () => setIsAnimating((prev) => !prev);
 
   return (
-    <div>
-        <button onClick={toggleAnimation}>
+    <div style={{ position: 'relative', width: '800px', margin: '0 auto' }}>
+        <button className="animation-toggle-btn" onClick={toggleAnimation}>
             {isAnimating ? 'Stop Animation' : 'Start Animation'}
         </button>
         <svg ref={svgRef} width={800} height={550}></svg>
