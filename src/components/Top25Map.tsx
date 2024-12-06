@@ -47,11 +47,11 @@ const Top25Map: React.FC<BubbleChartProps> = ({ data }) => {
       .domain(
         d3.extent(top25Countries, (d) => d[currentFactor]) as [number, number]
       )
-      .range([10, 80]);
+      .range([25, 100]);
 
     const colorScale = d3
       .scaleSequential(d3.interpolateYlGn)
-      .domain(d3.extent(top25Countries, (d) => d[currentFactor]) as [number, number]);
+      .domain(d3.extent(top25Countries, (d) => d.ladderScore) as [number, number]);
 
     // Create a simulation for packed bubble layout
     const pack = d3.pack()
@@ -73,7 +73,7 @@ const Top25Map: React.FC<BubbleChartProps> = ({ data }) => {
       .attr('cx', (d) => d.x)
       .attr('cy', (d) => d.y)
       .attr('r', (d) => d.r)
-      .attr('fill', (d) => colorScale((d.data as HappinessData)[currentFactor]))
+      .attr('fill', (d) => colorScale((d.data as HappinessData).ladderScore))
       .attr('stroke', '#000');
 
     // Add country names inside circles
@@ -111,6 +111,7 @@ const Top25Map: React.FC<BubbleChartProps> = ({ data }) => {
       .style('border-radius', '4px')
       .style('pointer-events', 'none');
 
+
     svg
       .selectAll('.bubble')
       .on('mouseover', (event, d) => {
@@ -118,6 +119,7 @@ const Top25Map: React.FC<BubbleChartProps> = ({ data }) => {
         tooltip
           .html(
             `<strong>${data.country}</strong><br>
+            Ladder Score: ${data.ladderScore.toFixed(2)}<br>
             ${factors.find((f) => f.key === currentFactor)?.label}: ${data[currentFactor].toFixed(
               2
             )}`
@@ -183,7 +185,7 @@ const Top25Map: React.FC<BubbleChartProps> = ({ data }) => {
       .attr('y', legendY - 10)
       .attr('text-anchor', 'middle')
       .style('font-size', '12px')
-      .text(`${factors.find((f) => f.key === currentFactor)?.label}`);
+      .text(`Ladder Score`);
 
     return () => {
       tooltip.remove();

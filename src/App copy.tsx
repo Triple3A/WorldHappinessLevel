@@ -7,6 +7,8 @@ import BarChart from './components/BarChart';
 import TimeSlider from './components/TimeSlider';
 import Top25Map from './components/Top25Map'; // Import the Top25Map component
 import { HappinessDataBase } from './types';
+import AverageBarChart from './components/AverageBarChart'; // Import AverageBarChart
+
 
 interface HappinessData extends HappinessDataBase {
   // upperwhisker: number;
@@ -105,11 +107,14 @@ const App: React.FC = () => {
       )}
       <br />
       <br />
-      <h2>Top 25 Happiest Countries: Click on the legend to change factor</h2>
+      <h2>Top 25 Happiest Countries: Click on the legend</h2>
       {data.length > 0 ? (
-        <Top25Map data={data} /> // Add the Top25Map component here
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <Top25Map data={data} /> {/* Top 25 bubble chart */}
+          <AverageBarChart data={data} /> {/* Average bar chart */}
+        </div>
       ) : (
-        <p>Loading bubble chart...</p>
+        <p>Loading bubble charts...</p>
       )}
       <br />
       <br />
@@ -118,13 +123,20 @@ const App: React.FC = () => {
           <Animation dataWithYear={dataWithYear} />
           <h2 style={{ marginTop: '60px' }}>Selected Year: {year}</h2>
           <TimeSlider onYearChange={handleYearChange} newYear={year} />
-          <WorldMap data={data} dataWithYear={filteredData} currentYear={year} onSelectCountry={handleSelectedCountry} />
+          <WorldMap
+            data={data}
+            dataWithYear={filteredData}
+            currentYear={year}
+            onSelectCountry={handleSelectedCountry}
+          />
         </>
       ) : (
         <p>Loading year-specific data...</p>
       )}
       <BarChart data={data} selectedCountry={selectedCountry} />
     </div>
+
+
   );
 };
 
