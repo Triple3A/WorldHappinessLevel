@@ -8,8 +8,8 @@ import TimeSlider from './components/TimeSlider';
 import { HappinessDataBase } from './types';
 
 interface HappinessData extends HappinessDataBase {
-  upperwhisker: number;
-  lowerwhisker: number;
+  // upperwhisker: number;
+  // lowerwhisker: number;
   dystopia: number;
 }
 
@@ -20,18 +20,20 @@ interface HappinessWithYear extends HappinessDataBase {
 }
 
 const App: React.FC = () => {
+  const empty = {} as HappinessData;
+  empty.ladderScore = 0;
   const [data, setData] = useState<HappinessData[]>([]);
   const [dataWithYear, setDataWithYear] = useState<HappinessWithYear[]>([]);
   const [year, setYear] = useState(2023); // Default year
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [selectedLadderScore, setLadderScore] = useState(0);
+  const [selectedCountry, setCountry] = useState<HappinessData>(empty);
 
   const handleYearChange = (newYear: number) => {
     setYear(newYear); // Update the state with the selected year
   };
 
-  const handleSelectedCountry = (ladderScore: number) => {
-    setLadderScore(ladderScore);
+  const handleSelectedCountry = (country: HappinessData) => {
+    setCountry(country);
   }
 
   useEffect(() => {
@@ -40,8 +42,6 @@ const App: React.FC = () => {
         const csvData = await d3.csv('../data/happinessLevel.csv', d => ({
           country: d['Country'],
           ladderScore: +d['Ladder score'],
-          upperwhisker: +d['upperwhisker'],
-          lowerwhisker: +d['lowerwhisker'],
           GDP: +d['Explained by: Log GDP per capita'],
           social_support: +d['Explained by: Social support'],
           healthy_life_expectency: +d['Explained by: Healthy life expectancy'],
@@ -120,13 +120,13 @@ const App: React.FC = () => {
           <Animation dataWithYear={dataWithYear} />
           <h2 style={{ marginTop: '60px' }}>Selected Year: {year}</h2>
           <TimeSlider onYearChange={handleYearChange} newYear={year} />
-          <WorldMap data={data} dataWithYear={filteredData} currentYear={year} />
+          <WorldMap data={data} dataWithYear={filteredData} currentYear={year} onSelectCountry={handleSelectedCountry}/>
         </>
       ) : (
         <p>Loading year-specific data...</p>
       )}
 
-      <BarChart data={data} selectedLadderScore={selectedLadderScore}/>
+      <BarChart data={data} selectedCountry={selectedCountry}/>
     </div>
   );
 };

@@ -6,8 +6,8 @@ import { HappinessDataBase } from '../types';
 
 
 interface HappinessData extends HappinessDataBase {
-  upperwhisker: number;
-  lowerwhisker: number;
+  // upperwhisker: number;
+  // lowerwhisker: number;
   dystopia: number;
 }
 
@@ -21,9 +21,10 @@ interface WorldMapProps {
   data: HappinessData[];
   dataWithYear: HappinessWithYear[];
   currentYear: number;
+  onSelectCountry: (country: HappinessData) => void;
 }
 
-const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear}) => {
+const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear, onSelectCountry}) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
 
@@ -113,6 +114,13 @@ const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear}) =
         .on('mouseout', () => {
           tooltip.style('opacity', 0)
           .style('display', 'none'); // Ensure it's fully removed from view
+        })
+        .on('click', (event, d) => {
+          const topoCountryName = (d.properties && d.properties.name) as string;
+          const countryData = data.find((c) => c.country === topoCountryName);
+          const empty = {} as HappinessData;
+          empty.ladderScore = 0;
+          onSelectCountry(countryData ? countryData : empty);
         });
 
       // Add a legend below the map
@@ -176,7 +184,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear}) =
 
       legend.append('g').attr('transform', `translate(0, ${legendHeight})`).call(legendAxis);
     });
-  }, [data, currentYear]);
+  }, [dataWithYear, currentYear]);
 
   return (
     <div>

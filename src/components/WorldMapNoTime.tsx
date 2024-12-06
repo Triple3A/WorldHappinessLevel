@@ -5,8 +5,8 @@ import { FeatureCollection } from 'geojson';
 import { HappinessDataBase } from '../types';
 
 interface HappinessData extends HappinessDataBase {
-  upperwhisker: number;
-  lowerwhisker: number;
+  // upperwhisker: number;
+  // lowerwhisker: number;
   dystopia: number;
 }
 
