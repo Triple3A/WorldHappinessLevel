@@ -5,14 +5,11 @@ import WorldMapNoTime from './components/WorldMapNoTime';
 import Animation from './components/Animation';
 import BarChart from './components/BarChart';
 import TimeSlider from './components/TimeSlider';
-import Top25Map from './components/Top25Map'; // Import the Top25Map component
+import Top25Map from './components/Top25Map';
+import AverageBarChart from './components/AverageBarChart';
 import { HappinessDataBase } from './types';
-import AverageBarChart from './components/AverageBarChart'; // Import AverageBarChart
-
 
 interface HappinessData extends HappinessDataBase {
-  // upperwhisker: number;
-  // lowerwhisker: number;
   dystopia: number;
 }
 
@@ -42,7 +39,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const csvData = await d3.csv('../data/happinessLevel.csv', d => ({
+        const csvData = await d3.csv('../data/happinessLevel.csv', (d) => ({
           country: d['Country'],
           ladderScore: +d['Ladder score'],
           GDP: +d['Explained by: Log GDP per capita'],
@@ -67,7 +64,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const loadDataWithYear = async () => {
       try {
-        const csvData = await d3.csv('../data/DataForTable.csv', d => ({
+        const csvData = await d3.csv('../data/DataForTable.csv', (d) => ({
           country: d['Country'],
           year: +d['year'],
           ladderScore: +d['Life Ladder'],
@@ -92,51 +89,66 @@ const App: React.FC = () => {
   }, []);
 
   // Filter data by the selected year
-  const filteredData = dataWithYear.filter(d => d.year === year);
+  const filteredData = dataWithYear.filter((d) => d.year === year);
 
   return (
-    <div id="main-container" style={{ padding: '20px' }}>
-      <h1>World Happiness Map</h1>
-      <h2>Let's first take a glance at how happy people have been in the past three years!</h2>
-      {loadError ? (
-        <p style={{ color: 'red' }}>{loadError}</p>
-      ) : data.length > 0 ? (
-        <WorldMapNoTime data={data} />
-      ) : (
-        <p>Loading happiness data...</p>
-      )}
-      <br />
-      <br />
-      <h2>Top 25 Happiest Countries: Click on the legend</h2>
-      {data.length > 0 ? (
-        <div style={{ display: 'flex', gap: '20px' }}>
-          <Top25Map data={data} /> {/* Top 25 bubble chart */}
-          <AverageBarChart data={data} /> {/* Average bar chart */}
-        </div>
-      ) : (
-        <p>Loading bubble charts...</p>
-      )}
-      <br />
-      <br />
-      {dataWithYear.length > 0 ? (
-        <>
-          <Animation dataWithYear={dataWithYear} />
-          <h2 style={{ marginTop: '60px' }}>Selected Year: {year}</h2>
-          <TimeSlider onYearChange={handleYearChange} newYear={year} />
+    <div
+      id="main-container"
+      style={{
+        height: '100vh',
+        overflowY: 'scroll',
+        scrollSnapType: 'y mandatory',
+      }}
+    >
+      <section style={{ height: '100vh', scrollSnapAlign: 'start', padding: '20px' }}>
+        <h1>World Happiness Map</h1>
+        <h2>Let's first take a glance at how happy people have been in the past three years!</h2>
+        {loadError ? (
+          <p style={{ color: 'red' }}>{loadError}</p>
+        ) : data.length > 0 ? (
+          <WorldMapNoTime data={data} />
+        ) : (
+          <p>Loading happiness data...</p>
+        )}
+      </section>
+
+      <section style={{ height: '100vh', scrollSnapAlign: 'start', padding: '20px' }}>
+        <h2>Top 25 Happiest Countries: Click on the legend</h2>
+        {data.length > 0 ? (
+          <div style={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
+            <Top25Map data={data} />
+            <AverageBarChart data={data} />
+          </div>
+        ) : (
+          <p>Loading bubble charts...</p>
+        )}
+      </section>
+
+      <section style={{ height: '100vh', scrollSnapAlign: 'start', padding: '20px' }}>
+        {dataWithYear.length > 0 ? (
+          <>
+            <Animation dataWithYear={dataWithYear} />
+
+          </>
+        ) : (
+          <p>Loading year-specific data...</p>
+        )}
+      </section>
+
+      <section style={{ height: '100vh', scrollSnapAlign: 'start', padding: '20px' }}>
+        <h2 style={{ marginTop: '60px' }}>Selected Year: {year}</h2>
+        <TimeSlider onYearChange={handleYearChange} newYear={year} />
+        <div style={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
           <WorldMap
             data={data}
             dataWithYear={filteredData}
             currentYear={year}
             onSelectCountry={handleSelectedCountry}
           />
-        </>
-      ) : (
-        <p>Loading year-specific data...</p>
-      )}
-      <BarChart data={data} selectedCountry={selectedCountry} />
+          <BarChart data={data} selectedCountry={selectedCountry} />
+        </div>
+      </section>
     </div>
-
-
   );
 };
 

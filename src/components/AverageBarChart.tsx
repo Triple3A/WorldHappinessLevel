@@ -38,14 +38,24 @@ const AverageBarChart: React.FC<AverageBarChartProps> = ({ data }) => {
     // Filter the top 25 happiest countries
     const top25Countries = [...data].slice(0, 25);
 
-    // Calculate the average of each factor
-    const averages = factors.map((factor) => ({
+    // Calculate the average of each factor for top 25 countries
+    const averagesTop25 = factors.map((factor) => ({
       key: factor.key,
       label: factor.label,
       value: d3.mean(top25Countries, (d) => d[factor.key]) || 0,
     }));
 
-    const maxValue = d3.max(averages, (d) => d.value) || 1;
+    // Calculate the average of each factor for all countries
+    const averagesGlobal = factors.map((factor) => ({
+      key: factor.key,
+      label: factor.label,
+      value: d3.mean(data, (d) => d[factor.key]) || 0,
+    }));
+
+    const maxValue = Math.max(
+      d3.max(averagesTop25, (d) => d.value) || 1,
+      d3.max(averagesGlobal, (d) => d.value) || 1
+    );
 
     // Set up scales
     const xScale = d3
@@ -55,7 +65,7 @@ const AverageBarChart: React.FC<AverageBarChartProps> = ({ data }) => {
 
     const yScale = d3
       .scaleBand()
-      .domain(averages.map((d) => d.label))
+      .domain(averagesTop25.map((d) => d.label))
       .range([margin.top, height - margin.bottom])
       .padding(0.4); // Space between bars
 
@@ -76,17 +86,29 @@ const AverageBarChart: React.FC<AverageBarChartProps> = ({ data }) => {
         .attr('transform', `translate(${margin.left},0)`)
         .call(d3.axisLeft(yScale));
 
-    // Draw bars
+    // Draw bars for top 25 averages
     svg
-      .selectAll('.bar')
-      .data(averages)
+      .selectAll('.bar-top25')
+      .data(averagesTop25)
       .join('rect')
-      .attr('class', 'bar')
+      .attr('class', 'bar-top25')
       .attr('x', margin.left)
       .attr('y', (d) => yScale(d.label)!)
       .attr('width', (d) => xScale(d.value) - margin.left)
-      .attr('height', yScale.bandwidth())
-      .attr('fill', '#4CAF50');
+      .attr('height', yScale.bandwidth() / 2) // Half the height for better visibility
+      .attr('fill', '#4CAF50'); // Green for top 25 averages
+
+    // Draw bars for global averages
+    svg
+      .selectAll('.bar-global')
+      .data(averagesGlobal)
+      .join('rect')
+      .attr('class', 'bar-global')
+      .attr('x', margin.left)
+      .attr('y', (d) => (yScale(d.label)! + yScale.bandwidth() / 2)) // Below the top 25 bar
+      .attr('width', (d) => xScale(d.value) - margin.left)
+      .attr('height', yScale.bandwidth() / 2) // Half the height for better visibility
+      .attr('fill', '#2196F3'); // Blue for global averages
 
     // Add tooltips
     const tooltip = d3
@@ -102,8 +124,8 @@ const AverageBarChart: React.FC<AverageBarChartProps> = ({ data }) => {
       .style('pointer-events', 'none');
 
     svg
-      .selectAll('.bar')
-      .on('mouseover', (event, d) => {
+      .selectAll('rect')
+      .on('mouseover', (event, d: any) => {
         tooltip
           .html(
             `<strong>${d.label}</strong><br>
@@ -131,8 +153,12 @@ const AverageBarChart: React.FC<AverageBarChartProps> = ({ data }) => {
 
   return (
     <div style={{ position: 'relative', width: '100%' }}>
-      <h3>Average of Each Factor in Top 25 Countries</h3>
+      <h3>Average of Each Factor in Top 25 Countries vs Global Averages</h3>
       <svg ref={svgRef} width={800} height={500}></svg>
+      <p style={{ marginTop: '10px' }}>
+        <span style={{ color: '#4CAF50', fontWeight: 'bold' }}>Top 25 Average</span> | 
+        <span style={{ color: '#2196F3', fontWeight: 'bold' }}> Global Average</span>
+      </p>
     </div>
   );
 };
