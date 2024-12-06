@@ -33,11 +33,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
     colorScale = d3.scaleSequential(d3.interpolateYlGnBu).domain([1.721, 7.741]), // Default color scale
   }) => {
 
-  // For colorscale prop
-  const fillColor = (countryName: string) => {
-    const countryData = dataWithYear.find((d) => d.country === countryName && d.year === currentYear);
-    return countryData ? colorScale(countryData.ladderScore) : '#ccc';
-  };
+
 
   const svgRef = useRef<SVGSVGElement | null>(null);
 
@@ -105,7 +101,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
   
       svg
         .selectAll<SVGPathElement, any>('.country')
-        .attr('fill', (d) => fillColor(d.properties.name))
         .on('mouseover', (event, d) => {
           const topoCountryName = (d.properties && d.properties.name) as string;
           const countryData = dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);

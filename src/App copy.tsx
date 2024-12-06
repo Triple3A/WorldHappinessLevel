@@ -55,10 +55,6 @@ const App: React.FC = () => {
     confidenceLevel: number;
   } | null>(null);
 
-  //for the last world map color scale
-  const customColorScale = d3.scaleSequential((t) =>
-    d3.interpolateRgb("#3e1f1f", "#d19a66")(t) // From dark burgundy (#3e1f1f) to bright brown (#d19a66)
-  ).domain([1.721, 7.741]); // Adjust the domain based on your ladderScore range
 
   const handleYearChange = (newYear: number) => setYear(newYear);
   const handleSelectedCountry = (country: HappinessData) => setCountry(country);
@@ -234,7 +230,6 @@ const App: React.FC = () => {
             dataWithYear={dataWithYear}
             currentYear={year}
             onSelectCountry={handleSelectedCountry}
-            colorScale={customColorScale} // Pass custom color scale
           />
           <BarChart data={data} selectedCountry={selectedCountry} />
         </div>
