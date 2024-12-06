@@ -108,6 +108,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
   
       svg
         .selectAll<SVGPathElement, any>('.country')
+        .attr('fill', (d) => fillColor(d.properties.name))
         .on('mouseover', (event, d) => {
           const topoCountryName = (d.properties && d.properties.name) as string;
           const countryData = dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
