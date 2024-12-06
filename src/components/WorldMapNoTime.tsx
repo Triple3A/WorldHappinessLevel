@@ -17,6 +17,8 @@ interface WorldMapProps {
 const WorldMapNoTime: React.FC<WorldMapProps> = ({ data }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [showTop10, setShowTop10] = useState(false);
+  const sortedData = [...data].sort((a, b) => b.ladderScore - a.ladderScore);
+  const usaRank = sortedData.findIndex((d) => d.country === 'United States of America') + 1;
 
   useEffect(() => {
     const svg = d3.select(svgRef.current);
@@ -209,7 +211,13 @@ const WorldMapNoTime: React.FC<WorldMapProps> = ({ data }) => {
         </div>
         {/* Position the sidebar on the right */}
         <div style={{ position: 'absolute', top: '50px', right: '20px' }}>
-          <button onClick={() => setShowTop10(!showTop10)}>
+          <button onClick={() => setShowTop10(!showTop10)}
+            style={{
+              padding: '10px 20px', // Adjusts the button size
+              fontSize: '16px',     // Adjusts the font size
+              borderRadius: '5px',  // Makes the button corners rounded
+              backgroundColor: 'gold',
+            }}>
             {showTop10 ? 'Hide Top 10 Countries' : 'Reveal Top 10 Countries'}
           </button>
           {showTop10 && (
@@ -220,6 +228,11 @@ const WorldMapNoTime: React.FC<WorldMapProps> = ({ data }) => {
                   <li key={c.country}>{c.country}</li>
                 ))}
               </ol>
+              {usaRank > 0 && (
+              <div style={{ marginTop: '10px', color: '#333' }}>
+                <strong>USA Rank:</strong> {usaRank}
+              </div>
+            )}
             </div>
           )}
         </div>

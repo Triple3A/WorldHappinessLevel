@@ -19,12 +19,26 @@ interface HappinessWithYear extends HappinessDataBase {
 
 interface WorldMapProps {
   data: HappinessData[];
-  dataWithYear: HappinessWithYear[];
+  dataWithYear: HappinessData[];
   currentYear: number;
-  onSelectCountry: (country: HappinessData) => void;
+  onSelectCountry: (country: string) => void;
+  colorScale?: d3.ScaleSequential<string>; // Add colorScale prop
 }
 
-const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear, onSelectCountry}) => {
+const WorldMap: React.FC<WorldMapProps> = ({
+    data,
+    dataWithYear,
+    currentYear,
+    onSelectCountry,
+    colorScale = d3.scaleSequential(d3.interpolateYlGnBu).domain([1.721, 7.741]), // Default color scale
+  }) => {
+
+  // For colorscale prop
+  const fillColor = (countryName: string) => {
+    const countryData = dataWithYear.find((d) => d.country === countryName);
+    return countryData ? colorScale(countryData.ladderScore) : '#ccc';
+  };
+
   const svgRef = useRef<SVGSVGElement | null>(null);
 
 
@@ -91,6 +105,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear, on
       .style('border-radius', '4px')
       .style('pointer-events', 'none')
 
+  
       svg
         .selectAll<SVGPathElement, any>('.country')
         .on('mouseover', (event, d) => {
