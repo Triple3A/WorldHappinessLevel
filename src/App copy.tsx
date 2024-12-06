@@ -24,10 +24,15 @@ const App: React.FC = () => {
   const [dataWithYear, setDataWithYear] = useState<HappinessWithYear[]>([]);
   const [year, setYear] = useState(2023); // Default year
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [selectedLadderScore, setLadderScore] = useState(0);
 
   const handleYearChange = (newYear: number) => {
     setYear(newYear); // Update the state with the selected year
   };
+
+  const handleSelectedCountry = (ladderScore: number) => {
+    setLadderScore(ladderScore);
+  }
 
   useEffect(() => {
     const loadData = async () => {
@@ -37,9 +42,9 @@ const App: React.FC = () => {
           ladderScore: +d['Ladder score'],
           upperwhisker: +d['upperwhisker'],
           lowerwhisker: +d['lowerwhisker'],
-          gdp: +d['Explained by: Log GDP per capita'],
-          socialSupport: +d['Explained by: Social support'],
-          lifeExpectency: +d['Explained by: Healthy life expectancy'],
+          GDP: +d['Explained by: Log GDP per capita'],
+          social_support: +d['Explained by: Social support'],
+          healthy_life_expectency: +d['Explained by: Healthy life expectancy'],
           freedom: +d['Explained by: Freedom to make life choices'],
           generosity: +d['Explained by: Generosity'],
           corruption: +d['Explained by: Perceptions of corruption'],
@@ -63,9 +68,9 @@ const App: React.FC = () => {
           country: d['Country'],
           year: +d['year'],
           ladderScore: +d['Life Ladder'],
-          gdp: +d['Log GDP per capita'],
-          socialSupport: +d['Social support'],
-          lifeExpectency: +d['Healthy life expectancy at birth'],
+          GDP: +d['Log GDP per capita'],
+          social_support: +d['Social support'],
+          healthy_life_expectency: +d['Healthy life expectancy at birth'],
           freedom: +d['Freedom to make life choices'],
           generosity: +d['Generosity'],
           corruption: +d['Perceptions of corruption'],
@@ -121,7 +126,7 @@ const App: React.FC = () => {
         <p>Loading year-specific data...</p>
       )}
 
-      <BarChart />
+      <BarChart data={data} selectedLadderScore={selectedLadderScore}/>
     </div>
   );
 };

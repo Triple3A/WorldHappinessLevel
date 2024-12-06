@@ -2,19 +2,39 @@ import React, { useState } from "react";
 import * as d3 from "d3";
 import { HappinessDataBase } from "../types";
 
-const features = ["GDP", "social_support", "health", "freedom", "generosity", "corruption", "dystopia"] as const;
+const features = ["GDP", "social_support", "healthy_life_expectency", "freedom", "generosity", "corruption", "dystopia"] as const;
 type Feature = typeof features[number];
 
-const data = [
-  { country: "Finland", GDP: 1.844, social_support: 1.572, health: 0.695, freedom: 0.859, generosity: 0.142, corruption: 0.546, dystopia: 2.082 },
-  { country: "Denmark", GDP: 1.908, social_support: 1.520, health: 0.699, freedom: 0.823, generosity: 0.204, corruption: 0.548, dystopia: 1.881},
-  { country: "Iceland", GDP: 1.881, social_support: 1.617, health: 0.718, freedom: 0.819, generosity: 0.258, corruption: 0.182, dystopia: 2.050},
-  { country: "Sweden", GDP: 1.878, social_support: 1.501, health: 0.724, freedom: 0.838, generosity: 0.221, corruption: 0.524, dystopia: 1.658 },
-  { country: "Israel", GDP: 1.803, social_support: 1.513, health: 0.740, freedom: 0.641, generosity: 0.153, corruption: 0.193, dystopia: 2.298 },
-  { country: "United States", GDP: 1.939, social_support: 1.392, health: 0.542, freedom: 0.586, generosity: 0.223, corruption: 0.169, dystopia: 1.873 },
-];
 
-const BarChart: React.FC = () => {
+interface HappinessData extends HappinessDataBase {
+  // upperwhisker: number;
+  // lowerwhisker: number;
+  dystopia: number;
+}
+
+interface HappinessWithYear extends HappinessDataBase {
+  year: number;
+  positiveEffect: number;
+  negativeEffect: number;
+}
+
+interface BarChartProps {
+  data: HappinessData[];
+  selectedLadderScore: number;
+  // dataWithYear: HappinessWithYear[];
+  // currentYear: number;
+}
+
+// const data = [
+//   { country: "Finland", GDP: 1.844, social_support: 1.572, health: 0.695, freedom: 0.859, generosity: 0.142, corruption: 0.546, dystopia: 2.082 },
+//   { country: "Denmark", GDP: 1.908, social_support: 1.520, health: 0.699, freedom: 0.823, generosity: 0.204, corruption: 0.548, dystopia: 1.881},
+//   { country: "Iceland", GDP: 1.881, social_support: 1.617, health: 0.718, freedom: 0.819, generosity: 0.258, corruption: 0.182, dystopia: 2.050},
+//   { country: "Sweden", GDP: 1.878, social_support: 1.501, health: 0.724, freedom: 0.838, generosity: 0.221, corruption: 0.524, dystopia: 1.658 },
+//   { country: "Israel", GDP: 1.803, social_support: 1.513, health: 0.740, freedom: 0.641, generosity: 0.153, corruption: 0.193, dystopia: 2.298 },
+//   { country: "United States", GDP: 1.939, social_support: 1.392, health: 0.542, freedom: 0.586, generosity: 0.223, corruption: 0.169, dystopia: 1.873 },
+// ];
+
+const BarChart: React.FC<BarChartProps> = ({ data, selectedLadderScore }) => {
   const [selectedFeatures, setSelectedFeatures] = useState<Feature[]>([...features]);
 
   const handleFeatureToggle = (feature: Feature) => {
@@ -23,8 +43,35 @@ const BarChart: React.FC = () => {
     );
   };
 
+  const getTopCountries = (
+    data: HappinessData[],
+    // currentYear: number
+  ): HappinessData[] => {
+    return data
+      .filter((entry) => entry.ladderScore >= selectedLadderScore)
+      // .filter((entry) => entry.year === currentYear) // Filter data for the current year
+      .sort((a, b) => b.ladderScore - a.ladderScore) // Sort in descending order of ladderScore
+      // .slice(0, 5) // Take the top 5 entries
+      .map((entry) => ({
+        country: entry.country,
+        ladderScore: entry.ladderScore,
+        GDP: entry.GDP, 
+        social_support: entry.social_support, 
+        healthy_life_expectency: entry.healthy_life_expectency, 
+        freedom: entry.freedom, 
+        generosity: entry.generosity, 
+        corruption: entry.corruption, 
+        dystopia: entry.dystopia,
+      })); // Extract relevant details
+  };
+  
+  // Example usage:
+  const topCountries = getTopCountries(data);
+  console.log(topCountries);
+  
+
   // Dynamically calculate scores based on selected features
-  const sortedData = data
+  const sortedData = topCountries
     .map((d) => ({
       ...d,
       total: selectedFeatures.reduce((sum, feature) => sum + d[feature], 0),
@@ -50,7 +97,7 @@ const BarChart: React.FC = () => {
   const colors = {
     GDP: "blue",
     social_support: "brown",
-    health: "green",
+    healthy_life_expectency: "green",
     freedom: "orange",
     generosity: "l-green",
     corruption: "red",

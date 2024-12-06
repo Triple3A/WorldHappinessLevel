@@ -68,12 +68,12 @@ const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear}) =
         .attr('d', path as any)
         .attr('fill', (d) => {
           const topoCountryName = (d.properties && d.properties.name) as string;
-          const countryData = currentYear === 2023 ? data.find((c) => c.country === topoCountryName) : dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
+          const countryData = dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
           return countryData ? colorScale(countryData.ladderScore) : '#ccc';
         })
         .attr('stroke', (d) => {
           const topoCountryName = (d.properties && d.properties.name) as string;
-          const countryData = currentYear === 2023 ? data.find((c) => c.country === topoCountryName) : dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
+          const countryData = dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
           return countryData ? '#000' : '#fff';
         });
 
@@ -94,7 +94,7 @@ const WorldMap: React.FC<WorldMapProps> = ({ data, dataWithYear, currentYear}) =
         .selectAll<SVGPathElement, any>('.country')
         .on('mouseover', (event, d) => {
           const topoCountryName = (d.properties && d.properties.name) as string;
-          const countryData = currentYear === 2023 ? data.find((c) => c.country === topoCountryName) : dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
+          const countryData = dataWithYear.find((c) => c.country === topoCountryName && c.year === currentYear);
 
           tooltip
             .html(

@@ -33,9 +33,9 @@ export interface PlotProps {
 export interface HappinessDataBase {
     country: string;
     ladderScore: number;
-    gdp: number;
-    socialSupport: number;
-    lifeExpectency: number;
+    GDP: number;
+    social_support: number;
+    healthy_life_expectency: number;
     freedom: number;
     generosity: number;
     corruption:	number;
