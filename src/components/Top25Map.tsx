@@ -50,7 +50,7 @@ const Top25Map: React.FC<BubbleChartProps> = ({ data }) => {
       .range([25, 100]);
 
     const colorScale = d3
-      .scaleSequential(d3.interpolateYlGn)
+      .scaleSequential((t) => d3.interpolateYlGn(1 - t))
       .domain(d3.extent(top25Countries, (d) => d.ladderScore) as [number, number]);
 
     // Create a simulation for packed bubble layout
