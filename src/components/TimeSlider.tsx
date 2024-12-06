@@ -54,7 +54,7 @@ const TimeSlider: React.FC<TimeSliderProps> = ({ onYearChange, newYear }) => {
         let newX = event.x - svgRect.left;
         newX = Math.max(margin.left, Math.min(newX, width - margin.right)); // Constrain within slider range
 
-        handle.attr("cx", event.x); // Update circle's position dynamically during drag
+        handle.attr("cx", newX); // Update circle's position dynamically during drag
 
         newYear = Math.round(scale.invert(newX)); // Convert position to year
         onYearChange(newYear); // Notify parent of year change
