@@ -57,8 +57,10 @@ const BarChart: React.FC<BarChartProps> = ({ data, selectedCountry }) => {
   };
   
   // Example usage:
-  const topCountries = getTopCountries(data);
+  let topCountries = getTopCountries(data);
   console.log(topCountries);
+
+  topCountries = topCountries.concat(selectedCountry);
   
 
   // Dynamically calculate scores based on selected features
