@@ -25,8 +25,6 @@ const WorldMapNoTime: React.FC<WorldMapProps> = ({ data }) => {
     const width = 800;
     const height = 500;
 
-    d3.select(svgRef.current).selectAll('*').remove();
-    d3.select('body').selectAll('.tooltip').remove();
 
     const projection = d3
       .geoMercator()
@@ -115,7 +113,7 @@ const WorldMapNoTime: React.FC<WorldMapProps> = ({ data }) => {
                 ? `<strong>${countryData.country}</strong><br>Ladder score: ${countryData.ladderScore}`
                 : `<strong>${topoCountryName}</strong><br>No data`
             )
-            .style('display', 'block')
+            // .style('display', 'block')
             .style('opacity', 1);
         })
         .on('mousemove', (event) => {
@@ -124,7 +122,7 @@ const WorldMapNoTime: React.FC<WorldMapProps> = ({ data }) => {
             .style('top', `${event.pageY + 10}px`);
         })
         .on('mouseout', () => {
-          tooltip.style('opacity', 0).style('display', 'none');
+          tooltip.style('opacity', 0);//.style('display', 'none');
         });
         
       // Add a legend below the map

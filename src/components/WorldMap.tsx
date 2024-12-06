@@ -47,9 +47,6 @@ const WorldMap: React.FC<WorldMapProps> = ({
     const width = 800;
     const height = 500;
 
-    d3.select(svgRef.current).selectAll('*').remove();
-
-    d3.select('body').selectAll('.tooltip').remove();
 
 
     // Set up projection and path
