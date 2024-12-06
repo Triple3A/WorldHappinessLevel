@@ -35,7 +35,7 @@ const WorldMap: React.FC<WorldMapProps> = ({
 
   // For colorscale prop
   const fillColor = (countryName: string) => {
-    const countryData = dataWithYear.find((d) => d.country === countryName);
+    const countryData = dataWithYear.find((d) => d.country === countryName && d.year === currentYear);
     return countryData ? colorScale(countryData.ladderScore) : '#ccc';
   };
 
