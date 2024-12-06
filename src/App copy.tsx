@@ -5,6 +5,7 @@ import WorldMapNoTime from './components/WorldMapNoTime';
 import Animation from './components/Animation';
 import BarChart from './components/BarChart';
 import TimeSlider from './components/TimeSlider';
+import Top25Map from './components/Top25Map'; // Import the Top25Map component
 import { HappinessDataBase } from './types';
 
 interface HappinessData extends HappinessDataBase {
@@ -34,7 +35,7 @@ const App: React.FC = () => {
 
   const handleSelectedCountry = (country: HappinessData) => {
     setCountry(country);
-  }
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -102,31 +103,27 @@ const App: React.FC = () => {
       ) : (
         <p>Loading happiness data...</p>
       )}
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      {/* <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
-      <br/> */}
+      <br />
+      <br />
+      <h2>Top 25 Happiest Countries: Click on the legend to change factor</h2>
+      {data.length > 0 ? (
+        <Top25Map data={data} /> // Add the Top25Map component here
+      ) : (
+        <p>Loading bubble chart...</p>
+      )}
+      <br />
+      <br />
       {dataWithYear.length > 0 ? (
         <>
           <Animation dataWithYear={dataWithYear} />
           <h2 style={{ marginTop: '60px' }}>Selected Year: {year}</h2>
           <TimeSlider onYearChange={handleYearChange} newYear={year} />
-          <WorldMap data={data} dataWithYear={filteredData} currentYear={year} onSelectCountry={handleSelectedCountry}/>
+          <WorldMap data={data} dataWithYear={filteredData} currentYear={year} onSelectCountry={handleSelectedCountry} />
         </>
       ) : (
         <p>Loading year-specific data...</p>
       )}
-
-      <BarChart data={data} selectedCountry={selectedCountry}/>
+      <BarChart data={data} selectedCountry={selectedCountry} />
     </div>
   );
 };
