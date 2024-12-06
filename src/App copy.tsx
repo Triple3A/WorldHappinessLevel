@@ -21,20 +21,23 @@ interface HappinessWithYear extends HappinessDataBase {
 }
 const downloadAllLocalStorage = () => {
   const keys = ['initialEvaluation', 'finalEvaluation'];
-  const data = keys.reduce((acc, key) => {
+  
+  // Type 'acc' as a Record<string, any>
+  const data = keys.reduce<Record<string, any>>((acc, key) => {
     const value = localStorage.getItem(key);
     if (value) {
       acc[key] = JSON.parse(value);
     }
     return acc;
-  }, {});
-
+  }, {}); // Initialize with an empty object
+  
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
   link.download = 'evaluationData.json';
   link.click();
 };
+
 
 const App: React.FC = () => {
   const empty = {} as HappinessData;
