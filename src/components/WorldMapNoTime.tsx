@@ -194,29 +194,38 @@ const WorldMapNoTime: React.FC<WorldMapProps> = ({ data }) => {
     .slice(0, 10);
 
   return (
-    <div style={{ position: 'relative', width: '100%' }}>
-      {/* Center the map */}
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <svg ref={svgRef} width={800} height={550}></svg>
-      </div>
-      {/* Position the sidebar on the right */}
-      <div style={{ position: 'absolute', top: '50px', right: '150px' }}>
-        <button onClick={() => setShowTop10(!showTop10)}>
-          {showTop10 ? 'Hide Top 10 Countries' : 'Reveal Top 10 Countries'}
-        </button>
-        {showTop10 && (
-          <div className="top-10-list" style={{ marginTop: '10px', background: '#fff', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
-            <h3>Top 10 Happiest Countries</h3>
-            <ol>
-              {top10Countries.map((c) => (
-                <li key={c.country}>{c.country}</li>
-              ))}
-            </ol>
+      <div style={{ position: 'relative', width: '100%' }}>
+        {/* Center the map */}
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <svg ref={svgRef} width={800} height={550}></svg>
+        </div>
+        {/* Legend */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ width: '20px', height: '20px', background: '#ccc', border: '1px solid #000' }}></div>
+            <span>No data</span>
+            {/* Add other color indicators as needed */}
           </div>
-        )}
+        </div>
+        {/* Position the sidebar on the right */}
+        <div style={{ position: 'absolute', top: '50px', right: '20px' }}>
+          <button onClick={() => setShowTop10(!showTop10)}>
+            {showTop10 ? 'Hide Top 10 Countries' : 'Reveal Top 10 Countries'}
+          </button>
+          {showTop10 && (
+            <div className="top-10-list" style={{ marginTop: '10px', background: '#fff', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
+              <h3>Top 10 Happiest Countries</h3>
+              <ol>
+                {top10Countries.map((c) => (
+                  <li key={c.country}>{c.country}</li>
+                ))}
+              </ol>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
   );
+    
 };
 
 export default WorldMapNoTime;

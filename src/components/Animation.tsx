@@ -169,7 +169,7 @@ const Animation: React.FC<WorldMapProps> = ({ dataWithYear }) => {
         if (currentYear === 2023) {
           setIsAnimating(false);
         }
-      }, 300);
+      }, 1000);
       
       return () => clearInterval(interval);
     }
