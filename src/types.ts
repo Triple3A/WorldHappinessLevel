@@ -6,30 +6,6 @@ export interface Margin {
     readonly bottom: number;
 }
 
-export interface ComponentSize {
-    width: number;
-    height: number;
-}
-
-export interface Point {
-    readonly posX: number;
-    readonly posY: number;
-}
-
-export interface VehicleData{
-    readonly year: number;
-    readonly sellingprice: number;
-    readonly mmr: number;
-    readonly condition: number;
-    readonly odometer: number;
-    readonly make: string;
-    profit: number;
-}
-
-export interface PlotProps {
-    data: VehicleData[];
-}
-
 export interface HappinessDataBase {
     country: string;
     ladderScore: number;
