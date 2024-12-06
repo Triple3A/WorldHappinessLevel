@@ -228,7 +228,7 @@ const App: React.FC = () => {
         <div style={{ display: 'flex', gap: '20px', justifyContent: 'space-between' }}>
           <WorldMap
             data={data}
-            dataWithYear={filteredData}
+            dataWithYear={dataWithYear}
             currentYear={year}
             onSelectCountry={handleSelectedCountry}
             colorScale={customColorScale} // Pass custom color scale

@@ -42,7 +42,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, selectedCountry }) => {
       .filter((entry) => entry.ladderScore >= selectedCountry.ladderScore)
       // .filter((entry) => entry.year === currentYear) // Filter data for the current year
       .sort((a, b) => b.ladderScore - a.ladderScore) // Sort in descending order of ladderScore
-      // .slice(0, 5) // Take the top 5 entries
+      .slice(0, 20) // Take the top 5 entries
       .map((entry) => ({
         country: entry.country,
         ladderScore: entry.ladderScore,

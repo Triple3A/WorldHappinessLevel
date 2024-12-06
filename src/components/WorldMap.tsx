@@ -19,9 +19,9 @@ interface HappinessWithYear extends HappinessDataBase {
 
 interface WorldMapProps {
   data: HappinessData[];
-  dataWithYear: HappinessData[];
+  dataWithYear: HappinessWithYear[];
   currentYear: number;
-  onSelectCountry: (country: string) => void;
+  onSelectCountry: (country: HappinessData) => void;
   colorScale?: d3.ScaleSequential<string>; // Add colorScale prop
 }
 
